@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Airplane Game!</title>
+</head>
+<body>
+	<style type="text/css">
+		#space{
+			background-image: url("space.jpg");
+			width: 853px;
+			height: 480px;
+		}
+		.player{
+			position: absolute;
+			width: 33px;
+			height: 35px;
+			background-image: url('player2.png');
+			
+		}
+		.enemy{
+			position: absolute;
+			width: 27px;
+			height: 23px;
+			background-image: url('enemy2.png');
+			
+		}
+		.missile{
+			width: 2px;
+			background-color: lightblue;
+			height: 10px;
+			position: absolute;
+		}
+	</style>
+		<div id="space">
+			<div id="players"></div>
+			<div id="enemies"></div>
+			<div id="missiles"></div>
+				<div class="missile"
+		</div>
+
+
+
+
+	<script type="text/javascript">
+	
+	var player = {
+		left: 450,
+		top: 410
+	}
+
+	var enemies = [
+		{left: 350, top:50},
+		{left: 450, top: 100},
+		{left: 550, top: 150},
+		{left: 250, top: 100}
+	]
+	//add 2 more - done
+
+	var missiles = []
+
+	function drawPlayer() {
+		content = "<div class='player'style='left:"+player.left+"px; top:"+player.top+"px'></div>";
+
+		document.getElementById('players').innerHTML = content;
+
+	}
+
+
+	function drawEnemies() {
+		content = "";
+		for(var idx=0;idx<enemies.length; idx++){
+			//console.log(idx);
+			content += "<div class='enemy'style='left:"+enemies[idx].left+"px; top:"+enemies[idx].top+"px'></div>";
+		}
+		document.getElementById("enemies").innerHTML = content;
+	}
+
+	function drawMissiles(){
+		content= "";
+		for (var idx=0;idx<missiles.length;idx++){
+			content += "<div class='missile'style='left:"+missiles[idx].left+"px; top:"+missiles[idx].top+"px'></div>";
+		}
+		document.getElementById('missiles').innerHTML = content;
+	}
+
+	function moveEnemies() {
+		for(var idx=0;idx<enemies.length; idx++){
+		enemies[idx].top = enemies[idx].top + 5; 
+	}
+}
+	function moveMissiles(){
+		for(var idx=0;idx<missiles.length; idx++){
+		missiles[idx].top = missiles[idx].top - 10; 
+	}
+	}
+
+	//movement (add up/down) - try to limit to 1/3 of the ocean
+	document.onkeydown = function(e) {
+		//console.log(e);
+		if(e.keyCode == 37){ //left
+			player.left = player.left - 10;
+		}
+		if(e.keyCode == 39){ //right
+			player.left = player.left + 10;
+		}
+		if(e.keyCode == 38){ //up
+			player.top = player.top - 10;
+			if(player.top < 320){
+				player.top = player.top + 10;
+			}
+		}
+		if(e.keyCode == 40){ //down
+			player.top = player.top + 10;
+			if(player.top > 450) {
+				player.top = player.top - 10
+			}
+		}
+		if(e.keyCode == 32){ //fire
+			missiles.push({left:player.left + 15, top: player.top - 5})
+			drawMissiles();
+		}
+		drawPlayer();
+
+	}
+
+
+	function gameLoop(){
+		console.log("gameLoop is running!");
+		drawPlayer();
+
+		moveEnemies();
+		drawEnemies();
+
+		moveMissiles();
+		drawMissiles();
+
+		setTimeout(gameLoop, 100);
+	}
+	gameLoop();
+
+	</script>
+</body>
+</html>

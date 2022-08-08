@@ -1,0 +1,281 @@
+<html>
+    <head>
+        <title>NinjaMan!</title>
+        <style type="text/css">
+            .wall {
+                background-color: blue;
+                height:40px;
+                width:40px;
+                display: inline-block;
+                margin:0px;
+            }
+            *{
+                margin:0;
+                padding:0;
+            }
+            .row {
+                line-height:0px;
+            }
+            .sushi {
+                background-color: black;
+                height:40px;
+                width:40px;
+                display: inline-block;
+                background-image:url('sushi.png');
+                background-size:contain;
+            }
+            .onigiri {
+                background-color: black;
+                height:40px;
+                width:40px;
+                display: inline-block;
+                background-image:url('onigiri.png');
+                background-size:contain;
+            }
+            .blank {
+                background-color: black;
+                height:40px;
+                width:40px;
+                display: inline-block;
+            }
+            #ninjaman{
+                background-color: black;
+                height:40px;
+                width:40px;
+                display: inline-block;
+                background-image:url('ninja.gif');
+                background-size:contain;
+                position:absolute;
+                left:40px;
+                top:40px;
+            }
+            #ghost{
+                background-color: black;
+                height:40px;
+                width:40px;
+                display: inline-block;
+                background-image:url('pinky.gif');
+                background-size:contain;
+                position:absolute;
+                left:40px;
+                top:40px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="world"></div>
+        <div id="ninjaman"></div>
+        <div id="score"></div>
+        <div id="turnCount"></div>
+        <div id="lives"></div>
+        <div id="ghost"></div>
+
+    </body>
+    <script type="text/javascript">
+    //Randomizing world generation from selection - 2 options, 0 or 1.
+    var randomWorld = Math.floor(Math.random() * 2);
+
+        if(randomWorld ==1){
+        var world = [
+        [1,	1,	1,	1,	1,	1,	1,	1,	1],
+        [1,	0,	2,	3,	0,	2,	0,	2,	1],
+        [1,	2,	1,	3,	2,	1,	2,	1,	1],
+        [1,	2,	2,	3,	2,	2,	2,	2,	1],
+        [1,	2,	2,	3,	2,	2,	2,	2,	1],
+        [1,	2,	1,	3,	2,	1,	2,	1,	1],
+        [1,	2,	2,	3,	2,	2,	2,	2,	1],
+        [1,	2,	2,	3,	2,	2,	2,	2,	1],
+        [1,	2,	1,	3,	2,	1,	2,	1,	1],
+        [1,	2,	2,	3,	2,	2,	2,	2,	1],
+        [1,	2,	2,	3,	2,	2,	2,	2,	1],
+        [1,	2,	1,	3,	2,	1,	2,	1,	1],
+        [1,	0,	2,	2,	0,	2,	0,	2,	1],
+        [1,	1,	1,	1,	1,	1,	1,	1,	1],
+        ];
+        }
+        else{
+            var world = [
+        [1,	1,	1,	1,	1,	1,	1,	1,	1],
+        [1,	0,	2,	2,	2,	2,	2,	2,	1],
+        [1,	2,	1,	1,	1,	1,	1,	2,	1],
+        [1,	2,	3,	3,	3,	3,	3,	2,	1],
+        [1,	2,	2,	3,	2,	2,	2,	2,	1],
+        [1,	2,	1,	1,	1,	1,	1,	2,	1],
+        [1,	2,	1,	1,	1,	1,	1,	2,	1],
+        [1,	2,	1,	1,	1,	1,	1,	2,	1],
+        [1,	2,	3,	3,	3,	3,	3,	2,	1],
+        [1,	2,	3,	3,	3,	3,	3,	2,	1],
+        [1,	2,	1,	1,	1,	1,	1,	2,	1],
+        [1,	2,	1,	1,	1,	1,	1,	2,	1],
+        [1,	2,	3,	3,	3,	3,	3,	2,	1],
+        [1,	1,	1,	1,	1,	1,	1,	1,	1],
+        ];
+        }
+        
+        var worldDict = {
+            0: "blank",
+            1:"wall",
+            2:"sushi",
+            3:"onigiri"
+        }
+
+        function drawWorld(){
+            var output = "";
+
+            for(var row=0; row<world.length; row++){
+                output += "<div class ='row'></div>"
+                for(var x = 0; x< world[row].length; x++){
+                    output += "<div class ='"+ worldDict[world[row][x]] +"'></div>"
+                    
+                }
+                output += "</div>"
+            }
+            document.getElementById('world').innerHTML = output;
+        }
+        drawWorld();
+
+        var ninjaman = {
+            x:1,
+            y:1
+        }
+
+        function drawNinjaman(){
+            document.getElementById('ninjaman').style.top = ninjaman.y * 40 + 'px';
+            document.getElementById('ninjaman').style.left = ninjaman.x * 40 + 'px';
+
+        }
+        drawNinjaman()
+
+        var ghost = {
+            x:1,
+            y:12
+        }
+
+        function drawGhost(){
+            document.getElementById('ghost').style.top = ghost.y * 40 +'px';
+            document.getElementById('ghost').style.left = ghost.x * 40 +'px';
+        }
+        drawGhost()
+        
+        
+        /* Brainstorming movement from prev lesson */
+
+        var turnCounter = 0;
+        //var ninjaXDist = world[ninjaman.x]-world[ghost.x];
+        //var ninjaYDist = world[ninjaman.y]-world[ghost.y];
+        document.onkeydown = function(e){
+    		//console.log(e);
+            // ninjaman movement
+    		if(e.keyCode == 37 || e.keyCode == 65) { // LEFT
+				if(world[ninjaman.y][ninjaman.x -1] != 1) {
+					ninjaman.x--;
+				}
+    	    }
+    		else if (e.keyCode == 39 || e.keyCode == 68) { // RIGHT
+				if(world[ninjaman.y][ninjaman.x +1] != 1) {
+					ninjaman.x++;
+				}	
+    		}
+    		else if (e.keyCode == 40 || e.keyCode == 83) { // DOWN
+				if(world[ninjaman.y + 1][ninjaman.x] != 1) {
+					ninjaman.y++;
+				}
+    	    }
+    		else if (e.keyCode == 38 || e.keyCode == 87) { // UP
+				if(world[ninjaman.y - 1][ninjaman.x] != 1) {
+					ninjaman.y--;
+				}
+            }
+            if(world[ninjaman.y][ninjaman.x]==2){
+                score += 10;
+            }
+            if(world[ninjaman.y][ninjaman.x]==3){
+                score += 5;
+            }
+
+            // Ghost Movement first 10 keypresses
+            if(turnCounter <=10){
+                var randMovement = Math.floor(Math.random() * 3);
+                if(randMovement==0){ //up
+                    if(world[ghost.y - 1][ghost.x] != 1) {
+					ghost.y--;
+                    }
+                }
+                if(randMovement==1){ //right
+                    if(world[ghost.y][ghost.x + 1] != 1) {
+					ghost.x++;
+				}
+                }
+                if(randMovement==2){ //left
+                    if(world[ghost.y][ghost.x - 1] != 1) {
+				ghost.x--;
+				}
+                }
+                if(randMovement==3){ //down
+                    if(world[ghost.y + 1][ghost.x] != 1) {
+					ghost.y++;
+				}
+                }
+            }
+            // Ghost Movement to chase player keypress 11+ move to keydown function
+            if(turnCounter > 10){
+                var ninjaXDist = ninjaman.x-ghost.x;
+                var ninjaYDist = ninjaman.y-ghost.y;
+                //console.log('Turn counter above 10');
+                //console.log("x dist is" +ninjaXDist+"");
+                //console.log("y dist is" +ninjaYDist+"");
+                if(Math.abs(ninjaXDist) > Math.abs(ninjaYDist)){
+                    if(ninjaXDist > 0 ){ // ninjaman right of ghost, move right
+                        if(world[ghost.y][ghost.x + 1] != 1) {
+			                ghost.x++;
+                            //console.log(ghost.x);
+                        }
+                    }
+                    if(ninjaXDist < 0){ //ninjaman left of ghost, move left
+                        if(world[ghost.y][ghost.x - 1] != 1) {
+					        ghost.x--;
+                            //console.log(ghost.y);
+                        }
+                    }
+                }
+                else{
+                    if(ninjaYDist < 0){ //ninjaman below ghost, move down
+                        if(world[ghost.y - 1][ghost.x] != 1) {
+                            ghost.y--;
+                        }
+                    }
+                    if(ninjaYDist > 0){
+                        if(world[ghost.y + 1][ghost.x] != 1) {
+                            ghost.y++;
+                        }
+                    }
+                }
+            }
+            // checking position and counting down lives, if lives are 0 promp user to reload page
+            if(ninjaman.x == ghost.x && ninjaman.y == ghost.y){
+                lives--;
+                if(lives === 0){
+                    if(confirm("Try again?")){
+                        location.reload();
+                    }
+                }
+            }
+
+            world[ninjaman.y][ninjaman.x]=0
+            turnCounter++;
+            drawWorld()
+            drawNinjaman()
+            drawGhost()
+            updatescore()
+        } 
+        var score = 0
+        var turnCounter = 0
+        var lives = 3
+        function updatescore(){
+            document.getElementById('score').innerHTML = score; 
+            document.getElementById('turnCount').innerHTML = turnCounter; 
+            document.getElementById('lives').innerHTML = lives;
+        }
+
+        </script>
+</html>
